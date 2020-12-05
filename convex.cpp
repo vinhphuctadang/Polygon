@@ -15,23 +15,27 @@ bool isConvex(vector<DD> polygon){
         return true;
     }
 
+    bool flag = false;
     DD currentVec = vec(polygon[0], polygon[1]);
-    DD nextVec = vec(polygon[1], polygon[2]);
     auto n = polygon.size();
 
-    double currentProd = product(currentVec, nextVec);
+    double currentProd;
+
     for(int i = 2; i<n; ++i) {
         auto u = i;
         auto v = (i + 1) % n;
 
-        DD tmpVec = vec(polygon[u], polygon[v]); 
-        double nextProd = product(nextVec, tmpVec);
+        DD nextVec = vec(polygon[u], polygon[v]); 
+        double nextProd = product(currentVec, nextVec);
+        if (!flag) {
+            currentProd = nextProd, currentVec = nextVec;
+            continue;
+        }
+
         if (currentProd * nextProd < 0) { // different sign
             return false; // not convex
         }
-
-        // next 
-        currentProd = nextProd, currentVec = nextVec, nextVec = tmpVec;
+        currentProd = nextProd, currentVec = nextVec;
     }
 
     return true;
